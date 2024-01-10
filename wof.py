@@ -73,7 +73,9 @@ class WofPlugin(plugins.Plugin):
         # logging.debug("Checking that wof is running...") # TODO: check running
 
     def on_unload(self, ui):
-        logging.debug("Stop wof") # TODO: implement unload
+        with ui._lock:
+            ui.remove_element('wof')
+            logging.info("[wof] plugin unloaded")
 
     def on_ui_setup(self, ui):
         try:
