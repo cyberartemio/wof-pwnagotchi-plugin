@@ -57,7 +57,7 @@ class WofPlugin(plugins.Plugin):
     __license__ = 'GPL3'
     __description__ = 'Display found Flipper Zeros from Wall of Flippers'
     
-    DEFAULT_POS = (5, 83)
+    DEFAULT_POS = (5, 84)
     DEFAULT_WOF_FILE = "/root/Wall-of-Flippers/Flipper.json"
 
 
@@ -86,19 +86,19 @@ class WofPlugin(plugins.Plugin):
                                            label='[wof]',
                                            value=" - ",
                                            position=self.__position,
-                                           label_font=fonts.Medium,
-                                           text_font=fonts.Medium))
+                                           label_font=fonts.Small,
+                                           text_font=fonts.Small))
 
     def on_ui_update(self, ui):
         flippers = self.__wof_bridge.get_update()
 
         if len(flippers["new"]) > 0:
             if len(flippers["new"]) == 1:
-                ui.set('status', f'Ooh, just met F0 {flippers["new"][0]}')
+                ui.set('status', f'Ooh, just met flipper {flippers["new"][0]}')
             else:
-                ui.set('status', f'Yooh, just met {len(flippers["new"])} new F0')
+                ui.set('status', f'Yooh, just met {len(flippers["new"])} flippers')
         
         if len(flippers["online"]) == 0:
-            ui.set('wof', f' {flippers["met"]} F0 met')
+            ui.set('wof', f'{flippers["met"]} flippers met')
         else:
             ui.set('wof', f'{flippers["online"][0]} ({flippers["met"]} met)')
