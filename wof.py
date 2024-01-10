@@ -57,31 +57,38 @@ class WofPlugin(plugins.Plugin):
     __license__ = 'GPL3'
     __description__ = 'Display found Flipper Zeros from Wall of Flippers'
     
-    DEFAULT_POS = (5, 83) # TODO: load from config and use this as a fallback
-    JSON_FILE = "/root/Wall-of-Flippers/Flipper.json" # TODO: load from config and use this as a fallback
+    DEFAULT_POS = (5, 83)
+    DEFAULT_WOF_FILE = "/root/Wall-of-Flippers/Flipper.json"
 
 
     def on_loaded(self):
-        logging.debug("Initializing wof plugin...")
-        self.__wof_bridge = WofBridge(self.JSON_FILE)
-        logging.debug("Checking that wof is installed...") # TODO: check installation
-        logging.debug("Checking that wof is running...") # TODO: check running
+        try:
+            self.__wof_file = self.options['wof_file']
+        except Exception:
+            self.__wof_file = self.DEFAULT_WOF_FILE
+        self.__wof_bridge = WofBridge(self.__wof_file)
+        
+        logging.info("WoF plugin loaded")
+        # logging.debug("Checking that wof is installed...") # TODO: check installation
+        # logging.debug("Checking that wof is running...") # TODO: check running
 
-    # called before the plugin is unloaded
     def on_unload(self, ui):
-        logging.debug("Stop wof")
+        logging.debug("Stop wof") # TODO: implement unload
 
-    # called to setup the ui elements
     def on_ui_setup(self, ui):
+        try:
+            self.__position = (self.options['position']['x'], self.options['position']['y'])
+        except Exception:
+            self.__position = self.DEFAULT_POS
+
         # add custom UI elements
         ui.add_element('wof', LabeledValue(color=BLACK,
                                            label='[wof]',
                                            value=" - ",
-                                           position=self.DEFAULT_POS,
+                                           position=self.__position,
                                            label_font=fonts.Medium,
                                            text_font=fonts.Medium))
 
-    # called when the ui is updated
     def on_ui_update(self, ui):
         flippers = self.__wof_bridge.get_update()
 
@@ -94,4 +101,4 @@ class WofPlugin(plugins.Plugin):
         if len(flippers["online"]) == 0:
             ui.set('wof', f' {flippers["met"]} F0 met')
         else:
-            ui.set('wof', f'{flippers["online"][0]} ({flippers["met"]})')
+            ui.set('wof', f'{flippers["online"][0]} ({flippers["met"]} met)')
