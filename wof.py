@@ -13,7 +13,7 @@ class WofBridge:
         known_flippers = self.__load_data()
         self.__known_flippers = [ flipper["UUID"] for flipper in known_flippers ]
         if len(self.__known_flippers) > 0:
-            logging.info(f"Already met {len(self.__known_flippers)} Flipper")
+            logging.info(f"[wof] Already met {len(self.__known_flippers)} Flippers")
 
     def get_update(self):
         update = {
@@ -44,10 +44,10 @@ class WofBridge:
                 try:
                     return json.loads(file.read())
                 except Exception as e:
-                    logging.critical(f"Error while loading and parsing json file: {e}")
+                    logging.critical(f"[wof] Error while loading and parsing json file: {e}")
                     return []
         else:
-            logging.critical(f"File not found: {self.__json_file}")
+            logging.critical(f"[wof] File not found: {self.__json_file}")
             return []
 
 
@@ -68,7 +68,7 @@ class WofPlugin(plugins.Plugin):
             self.__wof_file = self.DEFAULT_WOF_FILE
         self.__wof_bridge = WofBridge(self.__wof_file)
         
-        logging.info("WoF plugin loaded")
+        logging.info("[wof] Plugin loaded")
         # logging.debug("Checking that wof is installed...") # TODO: check installation
         # logging.debug("Checking that wof is running...") # TODO: check running
 
