@@ -158,7 +158,7 @@ INDEX = """
 <div class="container-fluid" data-theme="light">
     <div id="title">
         <h1 class="gravity center">Wall of <span class="orange">Flippers</span></h1>
-        <h3 class="born2bs center">pwnagotchi plugin v1.1</h3>
+        <h3 class="born2bs center">pwnagotchi plugin v1.1 - status: <span id="wof-status">-</span></h3>
     </div>
     <p id="status-sum" class="center"><span id="flippers-online">-</span> <span class="green">Online</span> - <span id="flippers-offline">-</span> <span class="red">Offline</span></p>
     <div id="content"></div>
@@ -212,6 +212,14 @@ INDEX = """
         total_flippers = [];
         document.getElementById("flippers-online").innerHTML = flippers.online.length;
         document.getElementById("flippers-offline").innerHTML = flippers.offline.length;
+        if(flippers.running) {
+            document.getElementById("wof-status").innerHTML = "running";
+            document.getElementById("wof-status").className = "green";
+        }
+        else {
+            document.getElementById("wof-status").innerHTML = "not running";
+            document.getElementById("wof-status").className = "red";
+        }
         for(var i = 0; i < flippers.online.length; i++) {
             flippers.online[i].online = true;
             total_flippers.push(flippers.online[i])
@@ -382,8 +390,11 @@ class WofBridge:
     def get_update(self):
         update = {
             "online": [],
-            "offline": []
+            "offline": [],
+            "running": False
         }
+
+        update["running"] = os.system("systemctl is-active --quiet wof.service") == 0
         
         flippers = self.__load_data()
         flippers.sort(key = lambda flipper: flipper["unixLastSeen"], reverse = True)
