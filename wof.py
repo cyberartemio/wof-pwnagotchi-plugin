@@ -112,6 +112,7 @@ INDEX = """
         border-radius: 15px;
         cursor: pointer;
         margin-top: 0px!important;
+        position: relative;
     }
     .flipper-card:hover {
         background-color: #dbdbdb;
@@ -151,6 +152,19 @@ INDEX = """
         right: 20px;
     }
 
+    .label-new {
+        background-color: #FF8200;
+        color: #000;
+        font-family: 'Haxr';
+        padding: 3px 15px;
+        border-radius: 5px;
+        font-size: 1.8em;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        line-height: 25px;
+    }
+
 </style>
 {% endblock %}
 
@@ -160,7 +174,9 @@ INDEX = """
         <h1 class="gravity center">Wall of <span class="orange">Flippers</span></h1>
         <h3 class="born2bs center">pwnagotchi plugin v1.1 - status: <span id="wof-status">-</span></h3>
     </div>
+
     <p id="status-sum" class="center"><span id="flippers-online">-</span> <span class="green">Online</span> - <span id="flippers-offline">-</span> <span class="red">Offline</span></p>
+    
     <div id="content"></div>
     
     <!-- Flipper modal -->
@@ -275,6 +291,13 @@ INDEX = """
                     var flipperLastSeen = document.createElement("p");
                     var lastSeenDate = new Date(flipper.unixLastSeen * 1000).toISOString();
                     flipperLastSeen.innerHTML = '<b>Last seen:</b> <time class="lastSeen" datetime="' + lastSeenDate + '">-</time>';
+
+                    if(flipper.new) {
+                        var label = document.createElement("span");
+                        label.className = "label-new";
+                        label.innerHTML = "NEW";
+                        flipperData.appendChild(label);
+                    }
 
                     flipperData.appendChild(flipperName);
                     flipperData.appendChild(flipperStatus);
