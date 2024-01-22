@@ -12,21 +12,25 @@ Simple plugin to show data from Wall Of Flippers on Pwnagotchi's screen. Display
 <img style="max-width: 500px" src=".github/assets/wof-plugin.png" alt="demo" />
 </div>
 
+## ✅ Prerequisites
+Before installing this plugin on your Pwnagotchi, you need to have Wall of Flippers installed. To install it, follow the installation steps on Wall of Flippers Github [repository](https://github.com/K3YOMI/Wall-of-Flippers#-installing-and-requirements-).
+
+
+> [!TIP]
+> If you want to run Wall of Flippers as a systemd daemon (i.e. headless mode), download and use the version from [this branch](https://github.com/cyberartemio/Wall-of-Flippers/tree/daemon-mode). For the installation process, check out the Pwnagotchi guide inside the `README.md`.
 
 ## 🚀 Installation
-> [!WARNING]
-> Before installing this plugin on your Pwnagotchi, you need to have Wall of Flippers installed. To Install it, follow the installation steps on Wall of Flippers Github [repository](https://github.com/K3YOMI/Wall-of-Flippers#-installing-and-requirements-).
 
 1. Login inside your pwnagotchi using SSH:
-```shell
+```sh
 ssh pi@10.0.0.2
 ``` 
 2. Go to `custom_plugins` directory where all custom plugins of your Pwnagotchi are stored:
-```shell
+```sh
 cd /path/to/custom_plugins/directory
 ```
 3. Download the plugin file:
-```shell
+```sh
 wget https://raw.githubusercontent.com/cyberartemio/wof-pwnagotchi-plugin/main/wof.py
 ```
 4. Edit your configuration file (`/etc/pwnagotchi/config.toml`) and add the following:
@@ -40,7 +44,7 @@ main.plugins.wof.position.y = 84
 main.plugins.wof.wof_file = "/root/Wall-of-Flippers/Flipper.json"
 ```
 5. Restart daemon service:
-```shell
+```sh
 sudo systemctl restart pwnagotchi
 ```
 
@@ -51,6 +55,22 @@ Done! Now the plugin is installed and is working.
 > - `wof.position.x`: `5`
 > - `wof.position.y`: `85`
 > - `wof.wof_file`: `/root/Wall-of-Flippers/Flipper.json`
+
+## ✨ Web UI
+
+This plugin comes also with a web UI that shows all Flippers met with additional data. You can use it by opening `http://10.0.0.2/plugins/wof` inside your browser (note: you need to be connected to your Pwnagotchi).
+
+Inside the web UI you'll find:
+
+- current status of `wof` systemd daemon
+- total count of online and offline flippers
+- list of all the flippers met with some data
+- if you click on a flipper, a modal will pop up with all its data
+- auto refresh of data every 60 seconds
+
+Here you can find a preview of what the UI will look like:
+
+![webui](.github/assets/wof-plugin-webui.png)
 
 ## ❤️ Contribution
 
