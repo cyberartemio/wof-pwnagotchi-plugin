@@ -172,7 +172,7 @@ INDEX = """
 <div class="container-fluid" data-theme="light">
     <div id="title">
         <h1 class="gravity center">Wall of <span class="orange">Flippers</span></h1>
-        <h3 class="born2bs center">pwnagotchi plugin v1.1 - status: <span id="wof-status">-</span></h3>
+        <h3 class="born2bs center">pwnagotchi plugin v{{ plugin_version }} - status: <span id="wof-status">-</span></h3>
     </div>
 
     <p id="status-sum" class="center"><span id="flippers-online">-</span> <span class="green">Online</span> - <span id="flippers-offline">-</span> <span class="red">Offline</span></p>
@@ -521,7 +521,7 @@ class WofPlugin(plugins.Plugin):
     def on_webhook(self, path, request):
         if request.method == "GET":
             if path == "/" or not path:
-                return render_template_string(INDEX)
+                return render_template_string(INDEX, plugin_version = self.__version__ )
             elif path == "flippers":
                 data = self.__wof_bridge.get_update()
                 return json.dumps(data)
