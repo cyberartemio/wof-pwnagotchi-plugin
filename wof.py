@@ -154,10 +154,10 @@ INDEX = """
 
     .label-new {
         background-color: #FF8200;
-        color: #000;
+        color: #fff;
         font-family: 'Haxr';
         padding: 3px 15px;
-        border-radius: 5px;
+        border-radius: 7px;
         font-size: 1.8em;
         position: absolute;
         right: 20px;
