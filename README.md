@@ -17,7 +17,7 @@ Before installing this plugin on your Pwnagotchi, you need to have Wall of Flipp
 
 
 > [!TIP]
-> If you want to run Wall of Flippers as a systemd daemon (i.e. headless mode), download and use the version from [this branch](https://github.com/cyberartemio/Wall-of-Flippers/tree/daemon-mode). For the installation process, check out the Pwnagotchi guide inside the `README.md`.
+> If you want to run Wall of Flippers as a systemd daemon (i.e. headless mode), download and use the version from [my repo](https://github.com/cyberartemio/Wall-of-Flippers) (you can follow the PR status on the official branch [here](https://github.com/K3YOMI/Wall-of-Flippers/pull/18)). For the installation process, check out the Pwnagotchi guide inside the `README.md`.
 
 ## 🚀 Installation
 
