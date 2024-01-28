@@ -29,11 +29,18 @@ ssh pi@10.0.0.2
 ```sh
 cd /path/to/custom_plugins/directory
 ```
-3. Download the plugin file:
+3. Download the plugin zipped file:
 ```sh
-wget https://raw.githubusercontent.com/cyberartemio/wof-pwnagotchi-plugin/main/wof.py
+wget https://github.com/cyberartemio/wof-pwnagotchi-plugin/archive/main.zip
 ```
-4. Edit your configuration file (`/etc/pwnagotchi/config.toml`) and add the following:
+4. Extract files and remove useless files:
+```sh
+unzip main.zip &&
+mv wof-pwnagotchi-plugin-main/wof.py . &&
+mv wof-pwnagotchi-plugin-main/wof_assets .&&
+rm -r wof-pwnagotchi-plugin-main main.zip
+```
+5. Edit your configuration file (`/etc/pwnagotchi/config.toml`) and add the following:
 ```toml
 # Enable the plugin
 main.plugins.wof.enabled = true
@@ -45,7 +52,7 @@ main.plugins.wof.wof_file = "/root/Wall-of-Flippers/Flipper.json"
 # A flipper is considered online if its last seen time is within this timespan
 main.plugins.wof.online_timespan = 30 # in seconds
 ```
-5. Restart daemon service:
+6. Restart daemon service:
 ```sh
 sudo systemctl restart pwnagotchi
 ```
