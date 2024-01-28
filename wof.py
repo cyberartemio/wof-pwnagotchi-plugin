@@ -402,11 +402,14 @@ INDEX = """
 """
 
 class WofBridge:
-    def __init__(self, json_file):
+    def __init__(self, json_file, online_timespan):
         self.__json_file = json_file
+        self.__online_timespan = online_timespan # in seconds
+
         known_flippers = self.__load_data()
         self.__known_flippers = [ flipper["UUID"] for flipper in known_flippers ]
         self.__session_flippers = [] # New flipper met during the current session
+
         if len(self.__known_flippers) > 0:
             logging.info(f"[wof] Already met {len(self.__known_flippers)} Flippers")
 
@@ -435,8 +438,8 @@ class WofBridge:
                     flipper["first_met"] = False
                 flipper["new"] = True
         
-            # online flippers (it is considered if last seen is max 5 minutes ago)
-            if time.time() - flipper["unixLastSeen"] < 60 * 5:
+            # online flippers (considered online if last seen is within online timespan)
+            if time.time() - flipper["unixLastSeen"] < self.__online_timespan:
                 update["online"].append(flipper)
             else:
                 update["offline"].append(flipper)
@@ -462,8 +465,9 @@ class WofPlugin(plugins.Plugin):
     __license__ = 'GPL3'
     __description__ = 'Display found Flipper Zeros from Wall of Flippers'
     
-    DEFAULT_POS = (5, 84)
-    DEFAULT_WOF_FILE = "/root/Wall-of-Flippers/Flipper.json"
+    DEFAULT_POS = (5, 84) # position on the display
+    DEFAULT_WOF_FILE = "/root/Wall-of-Flippers/Flipper.json" # location of Flipper.json file
+    DEFAULT_ONLINE_TIMESPAN = 60 * 2 # 2 minutes
 
 
     def on_loaded(self):
@@ -471,7 +475,13 @@ class WofPlugin(plugins.Plugin):
             self.__wof_file = self.options['wof_file']
         except Exception:
             self.__wof_file = self.DEFAULT_WOF_FILE
-        self.__wof_bridge = WofBridge(self.__wof_file)
+        
+        try:
+            self.__online_timespan = self.options['online_timespan']
+        except Exception:
+            self.__online_timespan = self.DEFAULT_ONLINE_TIMESPAN
+
+        self.__wof_bridge = WofBridge(self.__wof_file, self.__online_timespan)
         
         logging.info("[wof] Plugin loaded")
         # logging.debug("Checking that wof is installed...") # TODO: check installation

@@ -42,6 +42,8 @@ main.plugins.wof.position.x = 5
 main.plugins.wof.position.y = 84
 # File system path where Flipper.json file is located
 main.plugins.wof.wof_file = "/root/Wall-of-Flippers/Flipper.json"
+# A flipper is considered online if its last seen time is within this timespan
+main.plugins.wof.online_timespan = 30 # in seconds
 ```
 5. Restart daemon service:
 ```sh
@@ -51,10 +53,11 @@ sudo systemctl restart pwnagotchi
 Done! Now the plugin is installed and is working.
 
 > [!NOTE]
-> If you don't specify any values for `wof.position.x`, `wof.position.y` and `wof.wof_file`, the plugin will use the following default values:
+> If you don't specify any values for `wof.position.x`, `wof.position.y`, `wof.wof_file` and `wof.online_timespan`, the plugin will use the following default values:
 > - `wof.position.x`: `5`
 > - `wof.position.y`: `85`
 > - `wof.wof_file`: `/root/Wall-of-Flippers/Flipper.json`
+> - `wof.online_timespan`: `120` - 2 minutes
 
 ## ✨ Web UI
 
