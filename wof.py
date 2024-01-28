@@ -321,8 +321,6 @@ class WofPlugin(plugins.Plugin):
         self.__wof_bridge = WofBridge(self.__wof_file, self.__online_timespan)
         
         logging.info("[wof] Plugin loaded")
-        # logging.debug("Checking that wof is installed...") # TODO: check installation
-        # logging.debug("Checking that wof is running...") # TODO: check running
 
     def on_unload(self, ui):
         with ui._lock:
@@ -361,9 +359,9 @@ class WofPlugin(plugins.Plugin):
                 ui.set('status', f'Yooh, just met {len(new_flippers)} flippers')
         
         if len(flippers["online"]) == 0:
-            ui.set('wof', f'{len(flippers["online"]) + len(flippers["offline"])} flippers met')
+            ui.set('wof', f'{len(flippers["online"]) + len(flippers["offline"])} flippers { "(!)" if not flippers["running"] else "met" }')
         else:
-            ui.set('wof', f'{flippers["online"][0]["Name"]} ({len(flippers["online"]) + len(flippers["offline"])} met)')
+            ui.set('wof', f'{flippers["online"][0]["Name"]} - {len(flippers["online"]) + len(flippers["offline"])} met{" (!)" if not flippers["running"] else "" }')
 
     def on_webhook(self, path, request):
         if request.method == "GET":
