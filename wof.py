@@ -137,7 +137,7 @@ INDEX = """
         font-family: 'Haxr';
     }
 
-    .flipper-data > p:first-child {
+    .flipper-data p.red, .flipper-data p.green {
         font-size: 2.5em;
     }
 
@@ -164,7 +164,34 @@ INDEX = """
         top: 20px;
         line-height: 25px;
     }
+    @media (max-width: 550px) {
+        h1 {
+            font-size: 3em!important;
+        }
+        h3 {
+            font-size: 2em!important;
+        }
 
+        #status-sum {
+            font-size: 1.3em!important;
+        }
+
+        .flipper-data h4, #modal-flipper article h4 {
+            font-size: 1.5em!important;
+        }
+
+        .flipper-data p, #modal-flipper article p {
+            font-size: 1.5em!important;
+        }
+
+        .flipper-data p.red, .flipper-data p.green {
+            font-size: 1.8em!important;
+        }
+
+        .label-new {
+            font-size:1.4em!important;
+        }
+    }
 </style>
 {% endblock %}
 
