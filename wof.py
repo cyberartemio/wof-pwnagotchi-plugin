@@ -191,6 +191,12 @@ INDEX = """
         .label-new {
             font-size:1.4em!important;
         }
+        #status-divider {
+            display: none;
+        }
+        #plugin-version, #status-text {
+            display: block;
+        }
     }
 </style>
 {% endblock %}
@@ -199,7 +205,7 @@ INDEX = """
 <div class="container-fluid" data-theme="light">
     <div id="title">
         <h1 class="gravity center">Wall of <span class="orange">Flippers</span></h1>
-        <h3 class="born2bs center">pwnagotchi plugin v{{ plugin_version }} - status: <span id="wof-status">-</span></h3>
+        <h3 class="born2bs center"><span id="plugin-version">pwnagotchi plugin v{{ plugin_version }}</span><span id="status-divider"> - </span><span id="status-text">status: <span id="wof-status">-</span></span></h3>
     </div>
 
     <p id="status-sum" class="center"><span id="flippers-online">-</span> <span class="green">Online</span> - <span id="flippers-offline">-</span> <span class="red">Offline</span></p>
