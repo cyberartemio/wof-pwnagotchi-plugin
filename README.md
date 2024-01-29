@@ -44,6 +44,8 @@ rm -r wof-pwnagotchi-plugin-main main.zip
 ```toml
 # Enable the plugin
 main.plugins.wof.enabled = true
+# Show the flipper icon on screen instead of the label "[wof]"
+main.plugins.wof.icon = true
 # Display coordinates for text position
 main.plugins.wof.position.x = 5
 main.plugins.wof.position.y = 84
@@ -60,9 +62,10 @@ sudo systemctl restart pwnagotchi
 Done! Now the plugin is installed and is working.
 
 > [!NOTE]
-> If you don't specify any values for `wof.position.x`, `wof.position.y`, `wof.wof_file` and `wof.online_timespan`, the plugin will use the following default values:
+> If you don't specify any values for `wof.icon`, `wof.position.x`, `wof.position.y`, `wof.wof_file` and `wof.online_timespan`, the plugin will use the following default values:
+> - `wof.icon`: `true`
 > - `wof.position.x`: `5`
-> - `wof.position.y`: `85`
+> - `wof.position.y`: `82`
 > - `wof.wof_file`: `/root/Wall-of-Flippers/Flipper.json`
 > - `wof.online_timespan`: `120` - 2 minutes
 
