@@ -2,7 +2,7 @@ FLIPPER_WHITE = "wof/assets/flipper_white.png";
 FLIPPER_BLACK = "wof/assets/flipper_black.png"
 FLIPPER_TRASPARENT = "wof/assets/flipper_trasparent.png";
 
-function loadFlippers(url, callback) {
+function getRequest(url, callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
     xobj.open('GET', url, true);
@@ -25,10 +25,12 @@ function displayFlippers(flippers) {
     if(flippers.running) {
         document.getElementById("wof-status").innerHTML = "running";
         document.getElementById("wof-status").className = "green";
+        document.getElementById("btn-toggle-service").innerHTML = "STOP";
     }
     else {
         document.getElementById("wof-status").innerHTML = "not running";
         document.getElementById("wof-status").className = "red";
+        document.getElementById("btn-toggle-service").innerHTML = "START";
     }
     for(var i = 0; i < flippers.online.length; i++) {
         flippers.online[i].online = true;
@@ -110,12 +112,40 @@ function displayFlippers(flippers) {
     jQuery("time.lastSeen").timeago();
 }
 
-loadFlippers("wof/flippers", function(response) {
+getRequest("wof/flippers", function(response) {
     displayFlippers(response)
 })
 
+document.getElementById("form-refresh-data").addEventListener('submit', function(event) {
+    event.preventDefault();
+    getRequest("wof/flippers", function(response) {
+        displayFlippers(response)
+    })
+    return false;
+}, false);
+
+document.getElementById("form-toggle-daemon").addEventListener('submit', function(event) {
+    event.preventDefault();
+    getRequest("wof/toggle-daemon", function(response) {
+        getRequest("wof/flippers", function(response) {
+            displayFlippers(response)
+        })
+    })
+    return false;
+}, false);
+
+document.getElementById("form-restart-daemon").addEventListener('submit', function(event) {
+    event.preventDefault();
+    getRequest("wof/restart-daemon", function(response) {
+        getRequest("wof/flippers", function(response) {
+            displayFlippers(response)
+        })
+    })
+    return false;
+}, false);
+
 setInterval(function() {
-    loadFlippers("wof/flippers", function(response) {
+    getRequest("wof/flippers", function(response) {
         displayFlippers(response)        
     })
 }, 60 * 1000) // reload data every minute
