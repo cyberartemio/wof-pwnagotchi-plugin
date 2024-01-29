@@ -2,8 +2,9 @@ import logging
 import os
 import json
 import time
+from PIL import Image
 import pwnagotchi.plugins as plugins
-from pwnagotchi.ui.components import LabeledValue
+from pwnagotchi.ui.components import LabeledValue, Widget
 from pwnagotchi.ui.view import BLACK
 import pwnagotchi.ui.fonts as fonts
 from flask import abort
@@ -302,9 +303,10 @@ class WofPlugin(plugins.Plugin):
     __license__ = 'GPL3'
     __description__ = 'Display found Flipper Zeros from Wall of Flippers'
     
-    DEFAULT_POS = (5, 84) # position on the display
+    DEFAULT_POS = (5, 82) # position on the display
     DEFAULT_WOF_FILE = "/root/Wall-of-Flippers/Flipper.json" # location of Flipper.json file
     DEFAULT_ONLINE_TIMESPAN = 60 * 2 # 2 minutes
+    DEFAULT_ICON = True # show icon
 
 
     def on_loaded(self):
@@ -318,28 +320,40 @@ class WofPlugin(plugins.Plugin):
         except Exception:
             self.__online_timespan = self.DEFAULT_ONLINE_TIMESPAN
 
+        try:
+            self.__position = (self.options['position']['x'], self.options['position']['y'])
+        except Exception:
+            self.__position = self.DEFAULT_POS
+
+        try:
+            self.__icon = self.options['icon']
+        except Exception:
+            self.__icon = self.DEFAULT_ICON
+
         self.__wof_bridge = WofBridge(self.__wof_file, self.__online_timespan)
+        self.__assets_path = os.path.join(os.path.dirname(__file__), "wof_assets")
         
         logging.info("[wof] Plugin loaded")
 
     def on_unload(self, ui):
         with ui._lock:
             ui.remove_element('wof')
+            if self.__icon:
+                ui.remove_element('wof_logo')
             logging.info("[wof] plugin unloaded")
 
     def on_ui_setup(self, ui):
-        try:
-            self.__position = (self.options['position']['x'], self.options['position']['y'])
-        except Exception:
-            self.__position = self.DEFAULT_POS
-
-        # add custom UI elements
-        ui.add_element('wof', LabeledValue(color=BLACK,
-                                           label='[wof]',
-                                           value=" - ",
-                                           position=self.__position,
-                                           label_font=fonts.Small,
-                                           text_font=fonts.Small))
+        wof_text_pos = (self.__position[0] + 15, self.__position[1] + 2) if self.__icon else self.__position
+        wof_text_label = '' if self.__icon else '[wof]'
+        ui.add_element('wof', LabeledValue(color = BLACK,
+                                           label = wof_text_label,
+                                           value = " - ",
+                                           position = wof_text_pos,
+                                           label_font = fonts.Small,
+                                           text_font = fonts.Small))
+        
+        if self.__icon:
+            ui.add_element('wof_logo', Frame(path = f'{self.__assets_path}/flipper.png', xy = self.__position))
 
     def on_ui_update(self, ui):
         flippers = self.__wof_bridge.get_update()
@@ -359,9 +373,9 @@ class WofPlugin(plugins.Plugin):
                 ui.set('status', f'Yooh, just met {len(new_flippers)} flippers')
         
         if len(flippers["online"]) == 0:
-            ui.set('wof', f'{len(flippers["online"]) + len(flippers["offline"])} flippers { "(!)" if not flippers["running"] else "met" }')
+            ui.set('wof', f'{ "!! " if not flippers["running"] else "" }{len(flippers["online"]) + len(flippers["offline"])} flippers met')
         else:
-            ui.set('wof', f'{flippers["online"][0]["Name"]} - {len(flippers["online"]) + len(flippers["offline"])} met{" (!)" if not flippers["running"] else "" }')
+            ui.set('wof', f'{ "!! " if not flippers["running"] else "" }{flippers["online"][0]["Name"]} - {len(flippers["online"]) + len(flippers["offline"])} met')
 
     def on_webhook(self, path, request):
         if request.method == "GET":
@@ -371,7 +385,7 @@ class WofPlugin(plugins.Plugin):
                 data = self.__wof_bridge.get_update()
                 return json.dumps(data)
             elif path.startswith("assets"):
-                file = os.path.join(os.path.dirname(__file__), "wof_assets", path.split("/")[-1])
+                file = os.path.join(self.__assets_path, path.split("/")[-1])
                 if os.path.isfile(file):
                     with open(file, "rb") as file:
                         content = file.read()
@@ -380,5 +394,17 @@ class WofPlugin(plugins.Plugin):
                     abort(404)
             else:
                 abort(404)
-        
         abort(404)
+
+# Credits: https://github.com/roodriiigooo/PWNAGOTCHI-CUSTOM-FACES-MOD
+class Frame(Widget):
+    def __init__(self, path, xy, alpha = 0):
+        super().__init__(xy)
+        self.image = Image.open(path).resize((15, 15)).convert('RGBA')
+        self.alpha = alpha
+
+    def draw(self, canvas, drawer):
+        r, g, b, a = self.image.split()
+        alpha = Image.new('L', self.image.size, self.alpha)
+        canvas.paste(self.image, self.xy, mask = alpha)
+        canvas.paste(255, self.xy, mask = a)
