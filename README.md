@@ -79,6 +79,7 @@ This plugin comes also with a web UI that shows all Flippers met with additional
 Inside the web UI you'll find:
 
 - current status of `wof` systemd daemon
+- buttons to start/stop and restart `wof` systemd daemon
 - total count of online and offline flippers
 - list of all the flippers met with some data
 - if you click on a flipper, a modal will pop up with all its data
