@@ -67,7 +67,7 @@ INDEX = """
     h3 {
         font-size: 2.2em!important;
         margin-top: 5px!important;
-        margin-bottom: 50px!important;
+        margin-bottom: 20px!important;
     }
     .gravity {
         font-family: 'Gravity';
@@ -165,6 +165,28 @@ INDEX = """
         top: 20px;
         line-height: 25px;
     }
+    #buttons * {
+        display: inline-block;
+        font-size: 1.3em;
+        margin-left: 10px;
+        margin-bottom: 50px;
+    }
+    #buttons button {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        font-family: 'Haxr';
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        color: #fff;
+        background-color: #FF8200;
+        border: 0px;
+        width: auto;
+        padding: 5px 20px;
+    }
+    #buttons *:first-child {
+        margin-left: 0px;
+    }
     @media (max-width: 550px) {
         h1 {
             font-size: 3em!important;
@@ -198,6 +220,9 @@ INDEX = """
         #plugin-version, #status-text {
             display: block;
         }
+        #buttons * {
+            font-size: 1em;
+        }
     }
 </style>
 {% endblock %}
@@ -209,8 +234,19 @@ INDEX = """
         <h3 class="born2bs center"><span id="plugin-version">pwnagotchi plugin v{{ plugin_version }}</span><span id="status-divider"> - </span><span id="status-text">status: <span id="wof-status">-</span></span></h3>
     </div>
 
+    <div id="buttons" class="center">
+        <form id="form-refresh-data">
+            <button type="submit">REFRESH</button>
+        </form>
+        <form id="form-toggle-daemon">
+            <button type="submit" id="btn-toggle-service"></button>
+        </form>
+        <form id="form-restart-daemon">
+            <button type="submit">RESTART</button>
+        </form>
+    </div>
+
     <p id="status-sum" class="center"><span id="flippers-online">-</span> <span class="green">Online</span> - <span id="flippers-offline">-</span> <span class="red">Offline</span></p>
-    
     <div id="content"></div>
     
     <!-- Flipper modal -->
@@ -250,6 +286,18 @@ class WofBridge:
 
         if len(self.__known_flippers) > 0:
             logging.info(f"[wof] Already met {len(self.__known_flippers)} Flippers")
+    
+    def __is_daemon_running(self):
+        return os.system("systemctl is-active --quiet wof.service") == 0
+
+    def toggle_daemon(self):
+        if self.__is_daemon_running():
+            os.system("systemctl stop wof.service")
+        else:
+            os.system("systemctl start wof.service")
+    
+    def restart_daemon(self):
+        os.system("systemctl restart wof.service")
 
     def get_update(self):
         update = {
@@ -258,7 +306,7 @@ class WofBridge:
             "running": False
         }
 
-        update["running"] = os.system("systemctl is-active --quiet wof.service") == 0
+        update["running"] = self.__is_daemon_running()
         
         flippers = self.__load_data()
         flippers.sort(key = lambda flipper: flipper["unixLastSeen"], reverse = True)
@@ -381,6 +429,12 @@ class WofPlugin(plugins.Plugin):
         if request.method == "GET":
             if path == "/" or not path:
                 return render_template_string(INDEX, plugin_version = self.__version__ )
+            elif path == "toggle-daemon":
+                self.__wof_bridge.toggle_daemon()
+                return "{\"status\": \"ok\"}"
+            elif path == "restart-daemon":
+                self.__wof_bridge.restart_daemon()
+                return "{\"status\": \"ok\"}"
             elif path == "flippers":
                 data = self.__wof_bridge.get_update()
                 return json.dumps(data)
