@@ -355,6 +355,7 @@ class WofPlugin(plugins.Plugin):
     DEFAULT_WOF_FILE = "/root/Wall-of-Flippers/Flipper.json" # location of Flipper.json file
     DEFAULT_ONLINE_TIMESPAN = 60 * 2 # 2 minutes
     DEFAULT_ICON = True # show icon
+    DEFAULT_REVERSE_ICON = False # when true, draw the icon white instead of black
 
 
     def on_loaded(self):
@@ -377,6 +378,11 @@ class WofPlugin(plugins.Plugin):
             self.__icon = self.options['icon']
         except Exception:
             self.__icon = self.DEFAULT_ICON
+
+        try:
+            self.__reverse = self.options['icon_reverse']
+        except Exception:
+            self.__reverse = self.DEFAULT_REVERSE_ICON
 
         self.__wof_bridge = WofBridge(self.__wof_file, self.__online_timespan)
         self.__assets_path = os.path.join(os.path.dirname(__file__), "wof_assets")
@@ -401,7 +407,7 @@ class WofPlugin(plugins.Plugin):
                                            text_font = fonts.Small))
         
         if self.__icon:
-            ui.add_element('wof_logo', Frame(path = f'{self.__assets_path}/flipper.png', xy = self.__position))
+            ui.add_element('wof_logo', Frame(path = f'{self.__assets_path}/flipper.png', xy = self.__position, reverse = self.__reverse))
 
     def on_ui_update(self, ui):
         flippers = self.__wof_bridge.get_update()
@@ -452,13 +458,14 @@ class WofPlugin(plugins.Plugin):
 
 # Credits: https://github.com/roodriiigooo/PWNAGOTCHI-CUSTOM-FACES-MOD
 class Frame(Widget):
-    def __init__(self, path, xy, alpha = 0):
+    def __init__(self, path, xy, alpha = 0, reverse = False):
         super().__init__(xy)
         self.image = Image.open(path).resize((15, 15)).convert('RGBA')
         self.alpha = alpha
+        self.reverse = reverse
 
     def draw(self, canvas, drawer):
         r, g, b, a = self.image.split()
         alpha = Image.new('L', self.image.size, self.alpha)
         canvas.paste(self.image, self.xy, mask = alpha)
-        canvas.paste(255, self.xy, mask = a)
+        canvas.paste(255 if self.reverse else 0, self.xy, mask = a)
