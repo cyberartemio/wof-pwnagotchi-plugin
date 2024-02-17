@@ -1,6 +1,7 @@
 # 🐬 WoF Pwnagotchi plugin
 
-![GitHub Release](https://img.shields.io/github/v/release/cyberartemio/wof-pwnagotchi-plugin?style=flat-square)
+[![Discord server](https://img.shields.io/badge/Discord%20server-7289da?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/5vrJbbW3ve)
+ ![GitHub Release](https://img.shields.io/github/v/release/cyberartemio/wof-pwnagotchi-plugin?style=flat-square)
  ![GitHub issues](https://img.shields.io/github/issues/cyberartemio/wof-pwnagotchi-plugin?style=flat-square)
  ![GitHub License](https://img.shields.io/github/license/cyberartemio/wof-pwnagotchi-plugin?style=flat-square)
 
@@ -13,13 +14,12 @@ Simple plugin to show data from Wall Of Flippers on Pwnagotchi's screen. Display
 </div>
 
 ## ✅ Prerequisites
-Before installing this plugin on your Pwnagotchi, you need to have Wall of Flippers installed. To install it, follow the installation steps on Wall of Flippers Github [repository](https://github.com/K3YOMI/Wall-of-Flippers#-installing-and-requirements-).
-
-
-> [!TIP]
-> If you want to run Wall of Flippers as a systemd daemon (i.e. headless mode), download and use the version from [my repo](https://github.com/cyberartemio/Wall-of-Flippers) (you can follow the PR status on the official branch [here](https://github.com/K3YOMI/Wall-of-Flippers/pull/18)). For the installation process, check out the Pwnagotchi guide inside the `README.md`.
+Before installing this plugin on your Pwnagotchi, you need to have Wall of Flippers installed. To install it, follow the installation steps on the Github's [repository](https://github.com/cyberartemio/Wall-of-Flippers) of my version of Wall of Flippers.
 
 ## 🚀 Installation
+
+> [!IMPORTANT]
+> If you install the plugin using `pwnagotchi plugins` command, make sure to add also `wof_assets` directory to the directory where plugins are stored, otherwise the icon and other resources will not be rendered. Also, if you have Waveshare v4 screen, currently the icon is not rendering properly on pwnagotchi's screen.
 
 1. Login inside your pwnagotchi using SSH:
 ```sh
@@ -91,7 +91,7 @@ Here you can find a preview of what the UI will look like:
 
 ## ❤️ Contribution
 
-If you need help or you want to suggest new ideas, you can open an issue [here](https://github.com/cyberartemio/wof-pwnagotchi-plugin/issues/new).
+If you need help or you want to suggest new ideas, you can open an issue [here](https://github.com/cyberartemio/wof-pwnagotchi-plugin/issues/new) or you can join my Discord server using this [invite](https://discord.gg/5vrJbbW3ve).
 
 If you want to contribute, you can fork the project and then open a pull request.
 
